@@ -1,0 +1,513 @@
+\documentclass{beamer}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+% \usepackage{mathpazo}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\graphicspath{ {./} {../pictures/} {../prathm_pics} } 
+
+\title{Brownian Motion}
+\author{More Hardcore Walter}
+
+\begin{document}
+	
+	
+	\begin{frame}
+		\frametitle{What is Brownian Motion?}
+		\begin{itemize}[<+->]
+			\item A Random Walk is a stochastic process that describes a path that consists of a succession of random steps on some mathematical space. 
+			\item Consider a symmetric Random Walk, that in each time unit is equally likely to take a unit step to the left or to the right. 
+			\item Now, speed up this process by taking smaller and smaller steps in smaller and smaller intervals.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{What is Brownian Motion?}
+		
+		Formally, assume that every $\Delta t$ time units we take a step 
+		of size $\Delta x$ either to the left or to the right with equal probability.
+		
+		Let $X(t)$ denote the position at time $t$. Then
+		
+		\[
+		X(t) = \Delta x \left(X_1 + X_2 + \cdots + X_{\lfloor t/\Delta t \rfloor}\right)
+		\]
+		
+		where
+		
+		\[
+		X_i =
+		\begin{cases}
+			+1 & \text{if the $i$th step of length $\Delta x$ is to the right} \\
+			-1 & \text{if it is to the left}
+		\end{cases}
+		\]
+		
+		and the $X_i$ are independent with
+		
+		\[
+		P(X_i = 1) = P(X_i = -1) = \frac{1}{2}.
+		\]
+		
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{What is Brownian Motion?}
+		We Observe:
+		\begin{itemize}[<+->]
+			\item $E[X_i] = 0$
+			\item $E[X_i^2] = 1$
+			\item $Var(X_i) = 1$
+			\item $E[X(t)] = 0$
+			\item $Var(X(t)) = (\Delta x)^2 \lfloor t/\Delta t \rfloor$
+			\item Now we let $\Delta x = c\sqrt{\Delta t}$
+			\item What we get is a normally distributed stochastic process $X(t)$ with mean $0$ and variance $c^2 t$
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Brownian Motion}
+		
+		A stochastic process $\{X(t),\, t \ge 0\}$ is called a 
+		Brownian Motion if it satisfies:
+		
+		\begin{itemize}[<+->]
+			\item $X(0) = 0$
+			\item $\{X(t),\, t \ge 0\}$ has stationary independent increments
+			\item For every $t > 0$, 
+			\[
+			X(t) \sim \mathcal{N}(0, c^{2}t)
+			\]
+		\end{itemize}
+		
+		\pause
+		
+		When $c=1$, the process is called \textbf{Standard Brownian Motion}.
+		
+	\end{frame}
+	
+	\begin{frame}{Sample Paths of Brownian Motion}
+		
+		Brownian motion can be viewed as the \textbf{limit of random walks}.
+		This suggests that the process $X(t)$ should vary continuously with time.
+		
+		\pause
+		
+		In fact, it can be proved that
+		
+		\[
+		\text{with probability }1,\; X(t)\text{ is continuous in }t.
+		\]
+		
+		\pause
+		
+		However, the paths of Brownian motion are highly irregular:
+		
+		\begin{itemize}
+			\item They are continuous everywhere
+			\item But they are \textbf{nowhere differentiable} with probability 1
+		\end{itemize}
+		
+		\pause
+		
+		Thus Brownian motion paths are continuous but extremely rough
+		- they are never smooth.
+		
+	\end{frame}
+	
+	\begin{frame}{Brownian Motion is a Markov Process}
+		
+		\textbf{Claim:} Brownian motion $\{X(t), t \ge 0\}$ is a Markov process.
+		
+		\vspace{0.3cm}
+		
+		\textbf{Proof:}
+		
+		The independent increments property implies that the increment
+		\[
+		X(t+s) - X(s)
+		\]
+		is independent of all process values before time $s$.
+		Hence,
+		
+		\[
+		P(X(t+s) \le a \mid X(s)=x, X(u), 0 \le u < s)
+		\]
+		\[
+		= P(X(t+s)-X(s) \le a-x \mid X(s)=x, X(u), 0 \le u < s)
+		\]
+		\[
+		= P(X(t+s)-X(s) \le a-x)
+		\]
+		\[
+		= P(X(t+s) \le a \mid X(s)=x)
+		\]
+		
+		\vspace{0.3cm}
+		
+		Thus, the conditional distribution of the future state $X(t+s)$ given the
+		present $X(s)$ and the past $\{X(u), 0 \le u < s\}$ depends only on the
+		present state.
+		
+		\vspace{0.2cm}
+		
+		Therefore, Brownian motion satisfies the \textbf{Markov property}.
+		
+	\end{frame}
+	
+	\begin{frame}{Brownian Motion as a Gaussian Process}
+		
+		\begin{itemize}
+			
+			\item<1-> A stochastic process $\{X(t), t \ge 0\}$ is a \textit{Gaussian process} if
+			\[
+			(X(t_1), X(t_2), \ldots, X(t_n))
+			\]
+			has a multivariate normal distribution.
+			
+			\item<2-> Since $X(t)$ is normal with mean $0$ and variance $t$,
+			
+			\[
+			f_t(x) = \frac{1}{\sqrt{2\pi t}} e^{-x^2/(2t)}
+			\]
+			
+			\item<3-> Using independent increments,
+			
+			\[
+			f(x_1,\dots,x_n)
+			=
+			f_{t_1}(x_1)
+			f_{t_2-t_1}(x_2-x_1)
+			\cdots
+			f_{t_n-t_{n-1}}(x_n-x_{n-1})
+			\]
+			
+			\item<4-> Hence Brownian motion is a Gaussian process.
+			
+		\end{itemize}
+		
+	\end{frame}
+	
+	\begin{frame}{Covariance of Brownian Motion}
+		
+		Brownian motion can be characterized as a Gaussian process with
+		\[
+		E[X(t)] = 0
+		\]
+		and covariance
+		\[
+		\text{Cov}(X(s),X(t)) = s, \quad s \le t
+		\]
+		
+		\textbf{Idea:}
+		\[
+		X(t) = X(s) + (X(t)-X(s))
+		\]
+		Since increments are independent,
+		\[
+		\text{Cov}(X(s),X(t)-X(s)) = 0
+		\]
+		Thus
+		\[
+		\text{Cov}(X(s),X(t)) = \text{Var}(X(s)) = s
+		\]
+	\end{frame}
+	\begin{frame}{Brownian Bridge}
+		
+		Suppose $\{X(t)\}$ is Brownian motion.
+		
+		Define
+		
+		\[
+		Z(t) = X(t) - tX(1), \quad 0 \le t \le 1
+		\]
+		
+		Then
+		
+		\begin{itemize}
+			\item $Z(0)=0$
+			\item $Z(1)=0$
+		\end{itemize}
+		
+		This process is called the \textbf{Brownian Bridge}.
+		
+	\end{frame}
+	
+	\begin{frame}{Brownian Bridge Covariance}
+		
+		The Brownian Bridge is a Gaussian process with
+		
+		\[
+		E[Z(t)] = 0
+		\]
+		
+		and covariance
+		
+		\[
+		\text{Cov}(Z(s),Z(t)) = s(1-t), \quad s \le t
+		\]
+		
+	\end{frame}
+	\begin{frame}{Empirical Distribution Function}
+		
+		Let $X_1,X_2,\dots,X_n$ be i.i.d. Uniform$(0,1)$.
+		
+		Define
+		
+		\[
+		F_n(s) = \frac{N_n(s)}{n}
+		\]
+		
+		where
+		
+		\[
+		N_n(s) = \sum_{i=1}^n I(X_i \le s)
+		\]
+		
+	\end{frame}
+	
+	\begin{frame}{Fluctuations of the Empirical Distribution}
+		
+		Define the scaled process
+		
+		\[
+		\alpha_n(s) = \sqrt{n}(F_n(s)-s)
+		\]
+		
+		Then as $n \to \infty$
+		
+		\[
+		\alpha_n(s) \Rightarrow Z(s)
+		\]
+		
+		where $Z(s)$ is a Brownian Bridge.
+		
+	\end{frame}
+	
+	\begin{frame}{Key Takeaways}
+		
+		\begin{itemize}
+			
+			\item Brownian motion is a Gaussian process with covariance
+			
+			\[
+			Cov(X(s),X(t)) = \min(s,t)
+			\]
+			
+			\item Brownian Bridge = Brownian motion conditioned on $X(1)=0$
+			
+			\item Covariance of Brownian bridge:
+			
+			\[
+			Cov(Z(s),Z(t)) = s(1-t)
+			\]
+			
+			\item Fluctuations of empirical distributions converge to a Brownian bridge
+			
+		\end{itemize}
+		
+	\end{frame}
+	
+	\begin{frame}{Hitting Time}
+		
+		\begin{itemize}
+			\item \(T_a\) is the first time a Brownian motion process reaches state $a$. That is, $T_a$ is the minimum $t$ such that, $X(t)=a$.
+			\item We next attempt to compute $P(T_a\le t)$ by considering $P(X(t)\ge a)$.
+		\end{itemize}
+		
+		\[
+		\begin{aligned}
+			P\{X(t)\ge a\}
+			&=
+			P\{X(t)\ge a \mid T_a \le t\}\,P\{T_a \le t\} \\
+			&\quad + P\{X(t)\ge a \mid T_a > t\}\,P\{T_a > t\}
+		\end{aligned}
+		\]
+		
+	\end{frame}
+	
+	\begin{frame}{Hitting Time}
+		\begin{center}
+			\[
+			P\{X(t)\ge a \mid T_a \le t\}\ = 1/2
+			\]
+			
+		\end{center}
+		
+		\begin{itemize}
+			\item This is because, we reach state $a$ at time $T_a$. $X(t)-X(T_a)$ is a gaussian distributed with mean 0.
+			\item This implies that there is an equal probability of increase or decrease from $a$ between times $T_a$ and $t$.
+		\end{itemize}
+		
+		\begin{center}
+			\[
+			P\{X(t)\ge a \mid T_a > t\}\ = 0
+			\]
+			
+			If $T_a > t$, that implies we have never reached $a$ till time $t$. By continuity, this implies that $X(t)<a$. 
+			
+		\end{center}
+		
+		
+	\end{frame}
+	
+	\begin{frame}{Hitting Time}
+		This implies, 
+		\begin{center}
+			\[
+			P\{X(t)\ge a\} = \frac{1}{2}P\{T_a \le t\}
+			\]
+			\[
+			\begin{aligned}
+				P\{T_a \le t\} &= 2P\{X(t)\ge a\} \\
+				&= \frac{2}{\sqrt{2\pi t}} \int_a^\infty e^{-x^2/(2t)}\,dx \\
+				&= \frac{2}{\sqrt{2\pi}} \int_{a/\sqrt{t}}^\infty e^{-y^2/2}\,dy,
+				\\ \text{by setting } y=\frac{x}{\sqrt{t}}, \quad a>0.
+			\end{aligned}
+			\]
+		\end{center}
+	\end{frame}
+	
+	
+	\begin{frame}{Hitting Time for every state}
+		\begin{center}
+			\[
+			P\{T_a < \infty\}
+			=
+			\lim_{t\to\infty} P\{T_a \le t\}
+			=
+			\frac{2}{\sqrt{2\pi}} \int_0^\infty e^{-y^2/2}\,dy
+			=
+			1.
+			\]
+			This implies that it is guaranteed to visit any state $a$ in a Brownian Motion process.
+		\end{center}
+		
+		Next, we'll try to compute $E[T_a]$.
+	\end{frame}
+	
+	\begin{frame}{Expected Value of Hitting Time}
+		\[
+		\begin{aligned}
+			E[T_a]
+			&= \int_0^\infty P\{T_a > t\}\,dt \qquad \text{[Tail Integral]} \\[4pt]
+			&= \int_0^\infty \left(1 - \frac{2}{\sqrt{2\pi}} \int_{a/\sqrt{t}}^\infty e^{-y^2/2}\,dy \right) dt \qquad [1-P\{T_a\le t\}] \\[4pt]
+			&= \frac{2}{\sqrt{2\pi}} \int_0^\infty \int_0^{a/\sqrt{t}} e^{-y^2/2}\,dy\,dt \\[4pt]
+			&= \frac{2}{\sqrt{2\pi}} \int_0^\infty \int_0^{a^2/y^2} dt\, e^{-y^2/2}\,dy \\[4pt]
+			&= \frac{2a^2}{\sqrt{2\pi}} \int_0^\infty \frac{1}{y^2} e^{-y^2/2}\,dy \\[4pt]
+			&\ge \frac{2a^2 e^{-1/2}}{\sqrt{2\pi}} \int_0^1 \frac{1}{y^2}\,dy \\[4pt]
+			&= \infty
+		\end{aligned}
+		\]
+	\end{frame}
+	
+	\begin{frame}{Hitting Time Final Remarks}
+		\begin{itemize}
+			\item The expected value of hitting time being infinite with probability 1 of reaching a state implies that the walk is guaranteed to reach every state eventually but it might take infinite time to do so.
+			\item Symmetrically, similar results hold when $a<0$.
+		\end{itemize}
+		
+		\begin{center}
+			\[
+			P\{T_a \le t\}
+			=
+			\frac{2}{\sqrt{2\pi}}
+			\int_{|a|/\sqrt{t}}^\infty e^{-y^2/2}\,dy
+			\]
+		\end{center}
+		
+	\end{frame}
+	
+	\begin{frame}{Maximum Value}
+		It is the maximum value a process takes upto time $t$.
+		\[
+		\begin{aligned}
+			P\left\{ \max_{0 \le s \le t} X(s) \ge a \right\}
+			&= P\{T_a \le t\}
+			\qquad \text{(by continuity)} \\
+			&= 2P\{X(t)\ge a\} \\
+			&= \frac{2}{\sqrt{2\pi}} \int_{a/\sqrt{t}}^\infty e^{-y^2/2}\,dy.
+		\end{aligned}
+		\]
+	\end{frame}
+	
+	\begin{frame}{Infinite Path Length}
+		
+		Given any time frame from $t_1$ to $t_2$, the length of the path traversed by the process is $\infty$!
+		
+		\[
+		S_n:=\sum_{i=1}^n \left|B\!\left(\frac{iT}{n}\right)-B\!\left(\frac{(i-1)T}{n}\right)\right|.
+		\]
+		
+		For each \(i\),
+		\[
+		B\!\left(\frac{iT}{n}\right)-B\!\left(\frac{(i-1)T}{n}\right)\sim N\!\left(0,\frac{T}{n}\right),
+		\]
+		and these increments are independent. Hence we may write
+		\[
+		B\!\left(\frac{iT}{n}\right)-B\!\left(\frac{(i-1)T}{n}\right)
+		\overset{d}{=}
+		\sqrt{\frac{T}{n}}\,Z_i,
+		\]
+		where \(Z_1,\dots,Z_n\) are i.i.d. \(N(0,1)\). Therefore
+		\[
+		S_n
+		\overset{d}{=}
+		\sqrt{\frac{T}{n}}\sum_{i=1}^n |Z_i|.
+		\]
+	\end{frame}
+	\begin{frame}
+		Now divide by \(\sqrt{n}\):
+		\[
+		\frac{S_n}{\sqrt{n}}
+		\overset{d}{=}
+		\sqrt{T}\,\frac{1}{n}\sum_{i=1}^n |Z_i|.
+		\]
+		
+		By the Strong Law of Large Numbers,
+		\[
+		\frac{1}{n}\sum_{i=1}^n |Z_i|
+		\to \mathbb{E}|Z_1|
+		=
+		\sqrt{\frac{2}{\pi}}
+		\qquad\text{a.s.}
+		\]
+		Hence
+		\[
+		\frac{S_n}{\sqrt{n}}
+		\to
+		\sqrt{T}\,\sqrt{\frac{2}{\pi}}
+		\qquad\text{a.s.}
+		\]
+		
+		Therefore,
+		\[
+		S_n \sim \sqrt{\frac{2T}{\pi}}\,\sqrt{n}
+		\qquad\text{a.s.}
+		\]
+		and so
+		\[
+		S_n\to\infty
+		\qquad\text{a.s.}
+		\]
+		
+	\end{frame}
+	
+	\begin{frame}
+		Thus the sums
+		\[
+		\sum_{i=1}^n \left|B\!\left(\frac{iT}{n}\right)-B\!\left(\frac{(i-1)T}{n}\right)\right|
+		\]
+		grow without bound as \(n\to\infty\).
+		
+		This implies that the total path length is infinite. 
+	\end{frame}
+	
+	\begin{frame}
+		\begin{figure}
+			\centering
+			% \includegraphics[width=0.75\linewidth]{path_length.png}
+			\label{fig:placeholder}
+		\end{figure}
+		As the granularity of the steps increases, the total path length increases. This goes towards infinity as the number of steps increases. The time frame length for all of these paths is equal.
+	\end{frame}
+\end{document}

@@ -1,0 +1,187 @@
+\documentclass{beamer}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathrsfs}
+\title{Derivation of the Hitting Time Distribution for Brownian Motion with Drift}
+\author{}
+\date{}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Derivation of the hitting time distribution for a Brownian motion with drift}
+\textbf{1. Defining the Process and the Hitting Time}
+
+We are analyzing a Brownian motion process with a drift coefficient $\mu$. Let us define this stochastic process $\{X(t), t \geq 0\}$ as:
+
+\[
+X(t) = y + \mu t + B(t)
+\]
+
+Where:
+
+\begin{itemize}
+  \item $y$ is the deterministic initial position, meaning $X(0) = y$.
+  \item $\mu$ is the constant drift coefficient.
+  \item $B(t)$ is a standard, zero-mean Brownian motion. By definition, the state $X(h)$ at a small time $h$ is normal with mean $\mu h + y$ and variance $h$.
+\end{itemize}
+
+We want to find the probability density function $f(t; y)$ of the first hitting time $T_a$, which is the time it takes for the process to first reach a boundary $a$ (where $y < a$).
+\end{frame}
+
+\begin{frame}
+\frametitle{Markov property and backward equation}
+Because Brownian motion is a Markov process, its future is conditionally independent of its past given its present state. By the Strong Markov Property, the process "starts fresh" at any state it reaches. 
+
+\vspace{0.2cm}
+
+Therefore, the distribution of the remaining time to hit $a$ depends solely on the current spatial position $y$ and the time $t$.
+
+\vspace{0.2cm}
+
+Because the hitting time depends purely on the evolution from the starting state 
+y (time-homogeneity and the strong markov property), its probability density f(t;y) must satisfy this same backward equation:
+
+\[
+\frac{1}{2} \frac{\partial^2}{\partial y^2} f(t;y) + \mu \frac{\partial}{\partial y} f(t;y) = \frac{\partial}{\partial t} f(t;y)
+\]
+\end{frame}
+
+\begin{frame}
+We must pair this Partial Differential Equation (PDE) with strict physical constraints:
+
+\begin{itemize}
+  \item \textbf{Initial Condition ($t = 0$):} If the process starts at $y < a$, it cannot jump to $a$ in zero time. Thus, $f(0; y) = 0$.
+  \item \textbf{Boundary Condition at $y = a$:} If the process starts exactly at the boundary ($y = a$), it hits it immediately. Therefore, $f(t; a) = \delta(t)$, where $\delta(t)$ is the Dirac delta function.
+  \item \textbf{Boundary Condition as $y \rightarrow -\infty$:} As the starting point moves infinitely far from the boundary, the probability of reaching it in any finite time $t$ approaches $0$. Thus, $f(t; -\infty) = 0$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{3. Transforming the PDE to an ODE}
+To solve this PDE, we apply the Laplace transform with respect to time $t$, defined as $\mathcal{L}\{f(t; y)\} = \int_0^\infty e^{-st} f(t; y) dt = \tilde{f}(s; y)$ for $s > 0$.
+
+We transform the time derivative using integration by parts:
+
+\[
+\begin{aligned}
+\mathcal{L} \left\{ \frac{\partial}{\partial t} f(t;y) \right\} &= \int_{0}^{\infty} e^{-st} \frac{\partial}{\partial t} f(t;y) dt \\
+&= \left[ e^{-st} f(t;y) \right]_{0}^{\infty} - \int_{0}^{\infty} f(t;y) (-s e^{-st}) dt \\
+&= (0 - f(0;y)) + s \int_{0}^{\infty} e^{-st} f(t;y) dt \\
+&= s\tilde{f}(s;y) - f(0;y)
+\end{aligned}
+\]
+\end{frame}
+
+\begin{frame}
+Since $f(0; y) = 0$ for $y < a$, this term vanishes. Substituting this result into the backward diffusion equation replaces the time derivative with an algebraic multiplication, reducing the complex PDE into a simpler, purely spatial ODE.
+
+\[
+\frac{1}{2} \frac{\partial^2}{\partial y^2} \tilde{f}(s;y) + \mu \frac{\partial}{\partial y} \tilde{f}(s;y) - s\tilde{f}(s;y) = 0
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{4. Solving the Spatial ODE}
+This is a second-order linear homogeneous ODE with constant coefficients. We solve it by guessing a solution of the form of an exponential function (the Ansatz), $\tilde{f}(s;y) = e^{ry}$.
+
+We compute the spatial derivatives:
+
+\begin{itemize}
+  \item $\frac{\partial}{\partial y} \tilde{f}(s;y) = r e^{ry}$
+  \item $\frac{\partial^2}{\partial y^2} \tilde{f}(s;y) = r^2 e^{ry}$
+\end{itemize}
+
+Substituting these into the ODE yields:
+
+\[
+\frac{1}{2}(r^2 e^{ry}) + \mu (r e^{ry}) - s(e^{ry}) = 0
+\]
+
+Factoring out $e^{ry}$ gives the characteristic equation:
+\end{frame}
+\begin{frame}
+\[
+e^{ry} \left( \frac{1}{2} r^2 + \mu r - s \right) = 0
+\]
+
+Since $e^{ry}$ is never zero, the polynomial must be zero: $\frac{1}{2} r^2 + \mu r - s = 0$. Using the quadratic formula, we find the characteristic roots:
+
+\[
+r = \frac{-\mu \pm \sqrt{\mu^2 - 4(1/2)(-s)}}{2(1/2)} = -\mu \pm \sqrt{\mu^2 + 2s}
+\]
+
+This gives the general solution:
+
+\[
+\tilde{f}(s;y) = A(s) \exp \left( y \left( -\mu + \sqrt{\mu^2 + 2s} \right) \right) + 
+
+\hfill B(s) \exp \left( y \left( -\mu - \sqrt{\mu^2 + 2s} \right) \right)
+\]
+\end{frame}
+
+\begin{frame}
+\textbf{Applying the Boundary Conditions:}
+
+\begin{enumerate}
+  \item As $y \rightarrow -\infty$, the term $(-\mu - \sqrt{\mu^2 + 2s})$ is strictly negative (since $s > 0$). This causes the second term to grow exponentially toward infinity. Because a probability density must have a bounded Laplace transform (between $0$ and $1$), we must rigorously set $B(s) = 0$.
+  \item At the boundary $y = a$, the hitting time is instantaneous, so $f(t; a) = \delta(t)$. The Laplace transform of $\delta(t)$ is $1$.
+\end{enumerate}
+
+\vspace{-0.3cm}
+
+\[
+1 = A(s) \exp \left( a \left( -\mu + \sqrt{\mu^2 + 2s} \right) \right) \implies 
+
+\hfill A(s) = \exp \left( -a \left( -\mu + \sqrt{\mu^2 + 2s} \right) \right)
+\]
+\vspace{0.2cm}
+
+Substituting $A(s)$ back in, and letting $x = a - y > 0$ represent the initial spatial distance to the boundary, we arrive at the exact transform:
+
+\[
+\tilde{f}(s;x) = \exp \left( -x \left( \sqrt{\mu^2 + 2s} - \mu \right) \right)
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{5. Rigorous Laplace Inversion}
+To find the probability density function $f(t; x)$, we must invert $\tilde{f}(s; x)$ from the frequency domain back to the time domain.
+
+First, we factor out the constants with respect to $s$:
+
+\[
+\tilde{f}(s;x) = e^{x\mu} e^{-x\sqrt{2s+\mu^2}} = e^{x\mu} e^{-x\sqrt{2(s+\mu^2/2)}}
+\]
+
+We rely on the known standard inverse transform for a driftless Brownian motion:
+\[
+\mathcal{L}^{-1} \left\{ e^{-x\sqrt{2k}} \right\} = \frac{x}{\sqrt{2\pi t^3}} e^{-\frac{x^2}{2t}}
+\]
+\end{frame}
+\begin{frame}
+We apply, $\mathcal{L}^{-1}\{F(s + c)\} = e^{-ct} f(t)$, where our frequency shift is $c = \frac{\mu^2}{2}$. This shifts the time domain by multiplying it by $e^{-\frac{\mu^2}{2}t}$:
+
+\[
+\mathcal{L}^{-1} \left\{ e^{-x\sqrt{2(s+\mu^2/2)}} \right\} = e^{-\frac{\mu^2}{2}t} \left( \frac{x}{\sqrt{2\pi t^3}} e^{-\frac{x^2}{2t}} \right)
+\]
+
+Finally, we multiply the constant $e^{x\mu}$ back in to combine all exponential terms:
+
+\[
+f(t;x) = \frac{x}{\sqrt{2\pi t^3}} \exp \left( x\mu - \frac{\mu^2}{2}t - \frac{x^2}{2t} \right)
+\]
+\end{frame}
+\begin{frame}
+This yields the final, exact hitting time probability density function (the Inverse Gaussian distribution):
+
+\[
+f(t;x) = \frac{x}{\sqrt{2\pi t^3}} \exp \left( - \frac{(x - \mu t)^2}{2t} \right)
+\]
+\end{frame}
+
+\end{document}

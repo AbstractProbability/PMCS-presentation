@@ -1,0 +1,346 @@
+\documentclass{beamer}
+\usepackage{amsmath, amssymb}
+\title{Stochastic Calculus}
+\subtitle{Intuition and Derivation of It\^o's Lemma}
+\date{}
+
+\begin{document}
+%------------------------------------------------
+\begin{frame}
+\titlepage
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{The Intuition: Continuous Jitter}
+At the heart of stochastic calculus is the Wiener process (or Brownian motion). If you picture a continuous version of a random walk from a Monte Carlo simulation, that’s exactly what this is.
+\medskip
+
+Imagine a dust particle suspended in water, being constantly bombarded by water molecules from every direction. Its path is completely random, unpredictable, and continuous.
+\medskip
+
+It doesn't teleport, but every single fraction of a second, it zigs and zags independently of what it just did.
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Why Ordinary Calculus Fails}
+\textbf{Intuitive View:} Stochastic paths are continuous but nowhere differentiable. They are ``fractals'' entirely made of sharp corners. No matter how far you zoom in, you cannot draw a tangent line.
+\medskip
+
+\textbf{Technical View:} Ordinary calculus (Riemann-Stieltjes integration) requires the integrating variable to have \textit{bounded total variation}. 
+\medskip
+
+A Wiener process $W_t$ has \textbf{infinite total variation} on any finite interval, but it has a non-zero, finite \textbf{quadratic variation}:
+\[
+\lim_{\|\Pi\| \to 0} \sum (W_{t_i} - W_{t_{i-1}})^2 = t
+\]
+Because the total variation is infinite, ordinary limits of sums fail to converge predictably, breaking standard calculus.
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Ordinary Calculus: Taylor Expansion}
+To see exactly how it breaks, we look at the Taylor series. Consider a smooth function $f(x)$ and a small perturbation $\Delta x$:
+\[
+\Delta f = f(x + \Delta x) - f(x)
+\]
+Expanding this yields:
+\[
+\Delta f = f'(x)\Delta x + \frac{1}{2}f''(x)(\Delta x)^2 + \mathcal{O}((\Delta x)^3)
+\]
+To find the instantaneous rate of change, we divide by $\Delta x$:
+\[
+\frac{\Delta f}{\Delta x} = f'(x) + \frac{1}{2}f''(x)\Delta x + \mathcal{O}((\Delta x)^2)
+\]
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Ordinary Calculus: The Limit}
+Taking the limit as $\Delta x \to 0$:
+\[
+\lim_{\Delta x \to 0} \frac{\Delta f}{\Delta x} = f'(x) + 0 + 0 = f'(x)
+\]
+Because $(\Delta x)^2$ shrinks infinitely faster than $\Delta x$, all higher-order terms vanish completely.
+\medskip
+
+In differential shorthand, we state that $(dx)^2 = 0$, giving us the fundamental rule of ordinary calculus:
+\[
+df = f'(x) dx
+\]
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Stochastic Calculus: Taylor Expansion}
+Now consider a function $f(t, X_t)$ where $X_t$ follows a stochastic process defined by a drift $\mu$ and volatility $\sigma$:
+\[ dX_t = \mu dt + \sigma dW_t \]
+We expand $f$ using a bivariate Taylor series for small changes $\Delta t$ and $\Delta X_t$:
+\[
+\Delta f = \frac{\partial f}{\partial t}\Delta t + \frac{\partial f}{\partial x}\Delta X_t + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}(\Delta X_t)^2 + \frac{1}{2}\frac{\partial^2 f}{\partial t^2}(\Delta t)^2 + \dots
+\]
+In ordinary calculus, that $(\Delta X_t)^2$ term would vanish. In stochastic calculus, we must evaluate it carefully.
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{The Non-Vanishing Variance}
+Let's compute the squared differential $(dX_t)^2$:
+\[
+(dX_t)^2 = (\mu dt + \sigma dW_t)^2 = \mu^2(dt)^2 + 2\mu\sigma(dt \cdot dW_t) + \sigma^2(dW_t)^2
+\]
+The random jitter $dW_t$ scales with the square root of time: $dW_t \sim \sqrt{dt}$.
+\medskip
+
+Thus, squaring the noise yields a term that scales \textit{linearly} with time:
+\[ (dW_t)^2 = dt \]
+This gives us the fundamental heuristic rules of stochastic calculus:
+\[ (dt)^2 = 0, \qquad dt \cdot dW_t = 0, \qquad (dW_t)^2 = dt \]
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Deriving It\^o's Lemma}
+Applying these rules to our squared differential:
+\[
+(dX_t)^2 = 0 + 0 + \sigma^2 dt
+\]
+Because $(dW_t)^2 = dt$, the squared term is exactly as ``large'' as the first-order time step $dt$. It survives the limit.
+\medskip
+
+Substituting $(dX_t)^2 = \sigma^2 dt$ back into our Taylor expansion, and dropping higher-order terms like $(dt)^2$:
+\[
+df = \frac{\partial f}{\partial t}dt + \frac{\partial f}{\partial x}dX_t + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}(\sigma^2 dt)
+\]
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Where the ``Jitter Penalty'' Comes From}
+Because $(dW_t)^2 = dt$, we cannot ignore the second-order terms when we do a Taylor series expansion of our function $f(t, X_t)$.
+If we expand $df$ up to the second derivative, we get:
+\[ df = \frac{\partial f}{\partial t}dt + \frac{\partial f}{\partial x}dX_t + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}(dX_t)^2 + \dots \]
+
+We substitute our It\^o process definition $dX_t = \mu_t dt + \sigma_t dW_t$ into that $(dX_t)^2$ term:
+\begin{align*}
+(dX_t)^2 &= (\mu_t dt + \sigma_t dW_t)^2 \\
+         &= \mu_t^2(dt)^2 + 2\mu_t\sigma_t(dt)(dW_t) + \sigma_t^2(dW_t)^2
+\end{align*}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}
+In It\^o calculus, $(dt)^2 = 0$ and $dt \cdot dW_t = 0$ because they shrink too fast. But $(dW_t)^2 = dt$. So the equation collapses to:
+\[ (dX_t)^2 = \sigma_t^2 dt \]
+
+Substitute this back into the Taylor expansion to get the final theorem:
+\[ df(t, X_t) = \left( \frac{\partial f}{\partial t} + \mu_t \frac{\partial f}{\partial x} + \frac{1}{2}\sigma_t^2 \frac{\partial^2 f}{\partial x^2} \right) dt + \sigma_t \frac{\partial f}{\partial x} dW_t \]
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Formal Statement of It\^o's Lemma}
+\textbf{Definition (It\^o Process):}
+An It\^o process is a stochastic process $X_t$ that can be represented as the integral:
+\[ X_t = X_0 + \int_0^t \mu_s ds + \int_0^t \sigma_s dW_s \]
+which is commonly written in differential form as $dX_t = \mu_t dt + \sigma_t dW_t$.
+\medskip
+
+\textbf{Theorem (It\^o's Lemma):} 
+Let $X_t$ be an It\^o process. Let $f(t, x)$ be a scalar function that is twice continuously differentiable in $x$ and once in $t$ (i.e., $f \in C^{1,2}$). Then $Y_t = f(t, X_t)$ is also an It\^o process, and its differential is given by:
+\[
+df(t, X_t) = \left( \frac{\partial f}{\partial t} + \mu_t \frac{\partial f}{\partial x} + \frac{1}{2}\sigma_t^2 \frac{\partial^2 f}{\partial x^2} \right) dt + \sigma_t \frac{\partial f}{\partial x} dW_t
+\]
+\medskip
+\end{frame}
+%------------------------------------------------
+%------------------------------------------------
+\begin{frame}{The Model: Geometric Brownian Motion (GBM)}
+We want to model a quantity $S_t$ (like a stock price or population) that grows at a constant average rate but is subject to continuous random shocks proportional to its size.
+
+\vspace{0.5cm}
+\textbf{The Stochastic Differential Equation (SDE):}
+\[ dS_t = \mu S_t dt + \sigma S_t dW_t \]
+
+\textbf{Formal Definitions:}
+\begin{itemize}
+    \item $dS_t$: The instantaneous change in the variable $S_t$.
+    \item $\mu$: The constant percentage drift (expected growth rate).
+    \item $\sigma$: The constant percentage volatility (intensity of the noise).
+    \item $dW_t$: The increment of a standard Wiener process (the random shock).
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{The Transformation Strategy}
+Because $S_t$ appears on both the left side and in the differential terms on the right, we cannot integrate directly. We must isolate $S_t$.
+
+\vspace{0.3cm}
+\textbf{The Strategy:} Apply a transformation using the natural logarithm, $f(S_t) = \ln(S_t)$. 
+
+\vspace{0.3cm}
+First, we compute the necessary partial derivatives of $f(S) = \ln(S)$:
+\[
+\frac{\partial f}{\partial S} = \frac{1}{S}, \qquad \frac{\partial^2 f}{\partial S^2} = -\frac{1}{S^2}
+\]
+
+\vspace{0.3cm}
+Let's see what happens when we apply the chain rule in both ordinary and stochastic calculus.
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Side-by-Side: The System Setup}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\textbf{Ordinary Calculus} \\
+(Naive Approach)
+\vspace{0.3cm}
+
+Apply ordinary calculus rules. The system is governed by the SDE:
+\[ dS_t = \mu S_t dt + \sigma S_t dW_t \]
+\end{column}
+\hfill\vrule\hfill
+\begin{column}{0.45\textwidth}
+\textbf{Stochastic Calculus} \\
+(Stochastic System)
+\vspace{0.3cm}
+
+Volatility is non-zero ($\sigma > 0$). The system is governed by an SDE:
+\[ dS_t = \mu S_t dt + \sigma S_t dW_t \]
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Side-by-Side: Applying the Chain Rule}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\textbf{Ordinary Calculus}
+\vspace{0.3cm}
+
+Using the standard first-order chain rule for $f(S_t) = \ln(S_t)$:
+\[ d(\ln S_t) = \frac{\partial f}{\partial S} dS_t \]
+
+Substitute the derivative:
+\[ d(\ln S_t) = \frac{1}{S_t} dS_t \]
+\end{column}
+\hfill\vrule\hfill
+\begin{column}{0.45\textwidth}
+\textbf{Stochastic Calculus}
+\vspace{0.3cm}
+
+Using It\^o's Lemma (second-order expansion) for $f(S_t) = \ln(S_t)$:
+\[ d(\ln S_t) = \frac{\partial f}{\partial S} dS_t + \frac{1}{2}\frac{\partial^2 f}{\partial S^2}(dS_t)^2 \]
+
+Substitute the derivatives:
+\[ d(\ln S_t) = \frac{1}{S_t} dS_t - \frac{1}{2S_t^2}(dS_t)^2 \]
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Evaluating the Quadratic Term}
+In ordinary calculus, $(dS_t)^2 = 0$, so the second term vanishes. In stochastic calculus, we must evaluate $(dS_t)^2$ explicitly.
+
+\vspace{0.3cm}
+Square the full SDE:
+\[ (dS_t)^2 = (\mu S_t dt + \sigma S_t dW_t)^2 \]
+\[ (dS_t)^2 = \mu^2 S_t^2 (dt)^2 + 2\mu\sigma S_t^2 (dt \cdot dW_t) + \sigma^2 S_t^2 (dW_t)^2 \]
+
+\vspace{0.3cm}
+Apply the fundamental rules: $(dt)^2 = 0$, $dt \cdot dW_t = 0$, and crucially, $(dW_t)^2 = dt$.
+\[ (dS_t)^2 = 0 + 0 + \sigma^2 S_t^2 dt \]
+\[ (dS_t)^2 = \sigma^2 S_t^2 dt \]
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Side-by-Side: Substituting $dS_t$ Back In}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\textbf{Ordinary Calculus}
+\vspace{0.3cm}
+
+\[ d(\ln S_t) = \frac{1}{S_t} (\mu S_t dt + \sigma S_t dW_t) \]
+
+The $S_t$ variables cancel out:
+\[ d(\ln S_t) = \mu dt + \sigma dW_t \]
+\end{column}
+\hfill\vrule\hfill
+\begin{column}{0.45\textwidth}
+\textbf{Stochastic Calculus}
+\vspace{0.3cm}
+
+\[ d(\ln S_t) = \frac{1}{S_t} dS_t - \frac{1}{2S_t^2} (\sigma^2 S_t^2 dt) \]
+
+Substitute $dS_t$:
+\begin{align*}
+d(\ln S_t) &= \frac{1}{S_t}(\mu S_t dt + \sigma S_t dW_t) \\
+&\quad - \frac{1}{2}\sigma^2 dt
+\end{align*}
+
+The $S_t$ variables cancel out:
+\[ d(\ln S_t) = \mu dt + \sigma dW_t - \frac{1}{2}\sigma^2 dt \]
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Side-by-Side: Integration}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\textbf{Ordinary Calculus}
+\vspace{0.3cm}
+
+The variable $S_t$ is now completely isolated. We integrate both sides from $0$ to $t$:
+\[ \int_0^t d(\ln S_u) = \int_0^t (\mu du + \sigma dW_u) \]
+\[ \ln(S_t) - \ln(S_0) = \mu t + \sigma W_t \]
+\end{column}
+\hfill\vrule\hfill
+\begin{column}{0.45\textwidth}
+\textbf{Stochastic Calculus}
+\vspace{0.3cm}
+
+The variable $S_t$ is now completely isolated. We integrate both sides from $0$ to $t$:
+\[ \int_0^t d(\ln S_u) = \int_0^t \left(\mu - \frac{1}{2}\sigma^2\right) du 
+
+\hfill + \int_0^t \sigma dW_u \]
+\[ \ln(S_t) - \ln(S_0) = \left(\mu - \frac{1}{2}\sigma^2\right)t 
+
+\hfill \hfill + \sigma W_t \]
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Side-by-Side: The Final Explicit Solutions}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\textbf{Ordinary Calculus}
+\vspace{0.3cm}
+
+Exponentiate both sides to find $S_t$:
+\[ S_t = S_0 \exp(\mu t + \sigma W_t) \]
+
+\vspace{1.2cm}
+\textit{Result:} Mathematically incorrect naive guess. Ordinary calculus wrongly assumes the continuous variance carries no penalty.
+\end{column}
+\hfill\vrule\hfill
+\begin{column}{0.45\textwidth}
+\textbf{Stochastic Calculus}
+\vspace{0.3cm}
+
+Exponentiate both sides to find $S_t$:
+\[ S_t = S_0 \exp\left( \left(\mu - \frac{1}{2}\sigma^2\right)t 
+
+\hfill + \sigma W_t \right) \]
+
+\vspace{0.3cm}
+\textit{Result:} A log-normal process. The continuous noise inherently degrades the growth trajectory.
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{The Conclusion: Volatility Drag}
+By solving the models side-by-side, we see exactly what ordinary calculus missed. 
+
+\vspace{0.5cm}
+If we simply added random noise to the ordinary calculus solution, we would have guessed $S_t = S_0 \exp(\mu t + \sigma W_t)$. \textbf{This is mathematically incorrect.}
+
+\vspace{0.5cm}
+The rigorous application of It\^o's Lemma reveals the $-\frac{1}{2}\sigma^2$ term. This is known as the \textbf{volatility drag}. It proves that the geometric mean growth rate of a stochastic process is strictly less than its arithmetic mean drift $\mu$, entirely due to the accumulated penalty of the path's non-zero quadratic variation.
+\end{frame}
+
+\end{document}
